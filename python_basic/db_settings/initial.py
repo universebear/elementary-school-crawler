@@ -7,7 +7,9 @@ __all__ = (
 
 
 def initial():
-    work_dir = os.path.dirname(os.getcwd())
+    work_dir = os.getcwd()
+    if os.path.exists(work_dir + '/data.db'):
+        return True
     con = sqlite3.connect(work_dir + '/data.db')
     cur = con.cursor()
     cur.execute(
@@ -17,7 +19,7 @@ def initial():
             school_name TEXT NOT NULL,
             category TEXT NOT NULL,
             subject TEXT NOT NULL,
-            contents TEXT,
+            contents TEXT NOT NULL ,
             date DATE,
             crawling_date DATE DEFAULT CURRENT_DATE
         )'''

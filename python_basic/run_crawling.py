@@ -1,16 +1,20 @@
-import os
+import os, sqlite3
 
 from db_settings import initial
+from crawling_pattern import school_daechi
 
 
 def db_initial():
-    db_url = os.getcwd()
-    if os.path.exists(db_url):
-        print("exists DataBase, Next process")
-        return True
-    else:
-        initial()
-        print("create DataBase")
+    """
+    db initial
+    :return:
+    """
+    # db_url = os.getcwd() + '/data.db'
+
+    initial()
+    con = sqlite3.connect(os.getcwd() + '/data.db')
+    cur = con.cursor()
+    school_daechi.Crawling().detail_page(con, cur)
 
 
 if __name__ == "__main__":
