@@ -1,5 +1,4 @@
-import sqlite3
-import os
+import sqlite3, os
 
 __all__ = (
     'initial',
@@ -7,11 +6,17 @@ __all__ = (
 
 
 def initial():
+    """
+    db 초기화
+    """
     work_dir = os.getcwd()
+    connect_data = {"connect": None, "status": False}
     if os.path.exists(work_dir + '/data.db'):
-        return True
-    con = sqlite3.connect(work_dir + '/data.db')
-    cur = con.cursor()
+        connect_data["connect"] = sqlite3.connect(work_dir + '/data.db')
+        connect_data["status"] = True
+        return connect_data
+    connect_data["connect"] = sqlite3.connect(work_dir + '/data.db')
+    cur = connect_data["connect"].cursor()
     cur.execute(
         '''CREATE TABLE school_notice(
             id INTEGER NOT NULL PRIMARY KEY,
@@ -35,5 +40,6 @@ def initial():
         FOREIGN KEY (post) REFERENCES school_notice(id) ON DELETE CASCADE
     )'''
     )
-    con.commit()
-    con.close()
+    connect_data["connect"].commit()
+    connect_data["connect"].close()
+    return connect_data

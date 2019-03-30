@@ -11,10 +11,8 @@ def db_initial():
     """
     # db_url = os.getcwd() + '/data.db'
 
-    initial()
-    con = sqlite3.connect(os.getcwd() + '/data.db')
-    cur = con.cursor()
-    school_daechi.Crawling().detail_page(con, cur)
+    print(school_daechi.Crawling().target_selection)
+    print(len(school_daechi.Crawling().target_selection))
 
 
 if __name__ == "__main__":

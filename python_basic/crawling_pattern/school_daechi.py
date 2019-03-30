@@ -1,5 +1,6 @@
 import datetime, re, requests, os, sqlite3
 from bs4 import BeautifulSoup
+from db_settings import initial
 
 __all__ = (
     'Crawling',
@@ -7,9 +8,15 @@ __all__ = (
 
 
 class Crawling:
+    """
+    서울 대치초등학교 패턴
+    """
     header = {
-        'Cookie': 'WMONID=zwbOYIPbk-_; JSESSIONID=nKQR40n3rgLKMIewS21Uov0b74alg6JX4U2CkSWm1yXIABUUU1rSm5Ayd88TyLiT.hostingwas2_servlet_engine7'
+        'Cookie': 'JSESSIONID=qGiWDLyKcx18QpKHZGXYsft7HrOn1pIBVWHIt61zhVe6TNLIUbMaTT1lYk81p8uf.hostingwas2_servlet_'
+                  'engine7;Path=/;HttpOnly'
     }
+
+    db_connect = initial()
 
     @property
     def target_selection(self):
@@ -18,20 +25,21 @@ class Crawling:
         :return: list[(id, subject, date)...]
         """
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardListAjax.do'
+        page_count = 1
         parameter = {
             'bbsId': 'BBSMSTR_000000006692',
             'bbsTyCode': 'notice',
-            'customRecordCountPerPage': 20,
-            'pageIndex': 1
+            'customRecordCountPerPage': 5,
+            'pageIndex': page_count
         }
-
+        print(self.db_connect["status"])
         response = requests.post(url, data=parameter, headers=self.header).text
         soup = BeautifulSoup(response, 'lxml')
-        notic_list_data = soup.select('table > tbody > tr')
+        notice_list_data = soup.select('table > tbody > tr')
         third_day = datetime.date.today() - datetime.timedelta(days=3)
         result_data = []
-        while notic_list_data:
-            source = notic_list_data.pop(0)
+        while notice_list_data:
+            source = notice_list_data.pop(0)
 
             post_type = source.select_one("td:nth-of-type(1)").get_text()
             post_date = source.select_one("td:nth-of-type(4)").get_text()
@@ -39,8 +47,15 @@ class Crawling:
 
             if '공지' in post_type:
                 continue
-            elif date_conversion < third_day:
+            elif date_conversion < third_day and not self.db_connect["status"]:
+                # 처음 크롤링 시에 3일 전의 일자까지의 데이터만 출력한다.
                 break
+            elif not notice_list_data:
+                # page 범위 내에 제약 일자가 없다면 다음 페이지로 이동 후 배열 업데이트
+                page_count += 1
+                parameter["pageIndex"] = page_count
+                response = requests.post(url, data=parameter, headers=self.header).text
+                notice_list_data += BeautifulSoup(response, 'lxml').select('table > tbody > tr')
 
             post_id = int(re.findall('\d+', source.select_one("td.subject > a").get('onclick'))[1])
             post_subject = source.select_one("td.subject > a").get_text()
@@ -75,9 +90,8 @@ class Crawling:
             result_data.append((post_id, '대치초등학교', 'notice', post_subject, post_content, post_date))
 
         cur.executemany(
-            """
-              INSERT INTO school_notice (post_id, school_name, category, subject, contents, date) VALUES (?,?,?,?,?,?)
-            """, result_data
+            "INSERT INTO school_notice (post_id, school_name, category, subject, contents, date) VALUES (?,?,?,?,?,?)",
+            result_data
         )
         con.commit()
         print('Save end')
