@@ -11,6 +11,10 @@ def initial():
     """
     work_dir = os.getcwd()
     connect_data = {"connect": None, "status": False}
+    download_dir = '/download_data/'
+    if not os.path.exists(work_dir + download_dir):
+        os.mkdir(work_dir + download_dir)
+
     if os.path.exists(work_dir + '/data.db'):
         connect_data["connect"] = sqlite3.connect(work_dir + '/data.db')
         connect_data["status"] = True
@@ -35,6 +39,7 @@ def initial():
         id INTEGER NOT NULL PRIMARY KEY,
         file_name TEXT NOT NULL,
         file_url TEXT NOT NULL,
+        date DATE,
         crawling_date DATE DEFAULT CURRENT_DATE,
         post INTEGER NOT NULL,
         FOREIGN KEY (post) REFERENCES school_notice(id) ON DELETE CASCADE
