@@ -11,8 +11,7 @@ def db_initial():
     """
     # db_url = os.getcwd() + '/data.db'
 
-    print(school_daechi.Crawling().target_selection)
-    print(len(school_daechi.Crawling().target_selection))
+    school_daechi.Crawling().detail_page()
 
 
 if __name__ == "__main__":

@@ -20,7 +20,7 @@ def initial():
     cur.execute(
         '''CREATE TABLE school_notice(
             id INTEGER NOT NULL PRIMARY KEY,
-            post_id INTEGER NOT NULL,
+            post_id BLOB NOT NULL,
             school_name TEXT NOT NULL,
             category TEXT NOT NULL,
             subject TEXT NOT NULL,
@@ -41,5 +41,4 @@ def initial():
     )'''
     )
     connect_data["connect"].commit()
-    connect_data["connect"].close()
     return connect_data
