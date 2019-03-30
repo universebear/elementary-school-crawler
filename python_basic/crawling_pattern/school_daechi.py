@@ -69,11 +69,19 @@ class Crawling:
             result_data.append((post_id, post_subject, post_date))
         return result_data
 
-    def file_download(self, html, date):
+    def file_download(self, html, post_id, date):
+        """
+        순차적 파일 다운로드
+        :param html: file 정보를 포함한 html comment text, javascript 데이터 동적 로드로 차선책
+        :param post_id: 관계를 연결할 post_id
+        :param date: 생성일자
+        :return: boolean
+        """
         soup = BeautifulSoup(html, 'lxml').select('tr > td > a')
         download_url = 'http://www.daechi.es.kr/dggb/board/boardFile/downFile.do'
         save_url = os.getcwd() + '/download_data/' + f'{date}/'
-
+        result_data = []
+        cur = self.db_connect["connect"].cursor()
         if not os.path.exists(save_url):
             os.mkdir(save_url)
 
@@ -83,6 +91,7 @@ class Crawling:
             file_number = int(re.search(r"\D[0-9]\D", file_data.get('href')).group().replace("'", ""))
             file_subject = re.search(r'\w*.+\.\w+', file_data.get_text(strip=True)).group()
             file_url = save_url + file_subject
+
             parameter = {
                 "atchFileId": file_id,
                 "fileSn": file_number
@@ -94,7 +103,15 @@ class Crawling:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
+            result_data.append((post_id, file_subject, file_url, date))
             print(f"file save : {file_subject}")
+        cur.executemany(
+            "INSERT INTO notice_files (post, file_subject, file_url, date) VALUES (?,?,?,?)",
+            result_data
+        )
+        self.db_connect["connect"].commit()
+        print("files db update")
+        return True
 
     def detail_page(self):
         """
@@ -126,7 +143,7 @@ class Crawling:
             post_content = soup.select_one('div.content').get_text(strip=True)
             result_data.append((post_id, self.school_name, 'notice', post_subject, post_content, post_date))
             file_list_html = ''.join(soup.find_all(string=lambda text: isinstance(text, Comment)))
-            self.file_download(file_list_html, post_date)
+            self.file_download(file_list_html, post_id, post_date)
         cur.executemany(
             "INSERT INTO school_notice (post_id, school_name, category, subject, contents, date) VALUES (?,?,?,?,?,?)",
             result_data

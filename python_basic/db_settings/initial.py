@@ -24,7 +24,7 @@ def initial():
     cur.execute(
         '''CREATE TABLE school_notice(
             id INTEGER NOT NULL PRIMARY KEY,
-            post_id BLOB NOT NULL,
+            post_id INTEGER NOT NULL,
             school_name TEXT NOT NULL,
             category TEXT NOT NULL,
             subject TEXT NOT NULL,
@@ -37,12 +37,12 @@ def initial():
         '''
         CREATE TABLE notice_files (
         id INTEGER NOT NULL PRIMARY KEY,
-        file_name TEXT NOT NULL,
+        file_subject TEXT NOT NULL,
         file_url TEXT NOT NULL,
         date DATE,
         crawling_date DATE DEFAULT CURRENT_DATE,
         post INTEGER NOT NULL,
-        FOREIGN KEY (post) REFERENCES school_notice(id) ON DELETE CASCADE
+        FOREIGN KEY (post) REFERENCES school_notice(post_id) ON DELETE CASCADE
     )'''
     )
     connect_data["connect"].commit()
