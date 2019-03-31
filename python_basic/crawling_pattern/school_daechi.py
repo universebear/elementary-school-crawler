@@ -12,7 +12,7 @@ class Crawling:
     서울 대치초등학교 패턴
     """
     school_data = {
-        "school_name": "대치초등학교",
+        "school_name": "daechi",
         "board_id": [
             {
                 "id": "BBSMSTR_000000006692",
@@ -36,7 +36,7 @@ class Crawling:
     # db_connect = initial()
     db_path = os.getcwd() + '/data.db'
 
-    def target_selection(self, board_id):
+    def target_selection(self, board):
         """
         크롤링 데이터 id 추출
         :return: list[(id, subject, date)...]
@@ -48,7 +48,7 @@ class Crawling:
         result_data = []
 
         parameter = {
-            'bbsId': board_id,
+            'bbsId': board["id"],
             'bbsTyCode': 'notice',
             'customRecordCountPerPage': 5,
             'pageIndex': page_count
@@ -66,7 +66,13 @@ class Crawling:
             post_id = int(re.findall('\d+', source.select_one("td.subject > a").get('onclick'))[1])
             post_subject = source.select_one("td.subject > a").get_text()
             db_exists = cur.execute(
-                f"SELECT EXiSTS (SELECT 1 FROM school_notice WHERE post_id = {post_id})").fetchone()
+                f"""
+                    SELECT EXiSTS (
+                    SELECT school_name post_id FROM school_notice
+                    WHERE (school_name = "{self.school_data['school_name']}") AND post_id = {post_id}
+                    )
+                """).fetchone()
+
             if '공지' in post_type:
                 continue
             elif date_conversion < third_day:
@@ -125,7 +131,7 @@ class Crawling:
         con = sqlite3.connect(self.db_path)
         cur = con.cursor()
         cur.executemany(
-            "INSERT INTO notice_files (post, file_subject, file_url, date) VALUES (?,?,?,?)",
+            """INSERT INTO notice_files (post, file_subject, file_url, date) VALUES (?,?,?,?)""",
             result_data
         )
         con.commit()
@@ -137,12 +143,12 @@ class Crawling:
         데이터 크롤링
         :return: boolean
         """
-        initial()
+        # initial()
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardDetailAjax.do'
         for board in self.school_data["board_id"]:
             print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"
                   , end="\n\n")
-            arr = self.target_selection(board["id"])
+            arr = self.target_selection(board)
             if not arr:
                 # 데이터가 없을경우 원본의 업데이트가 없다고 판단
                 print("Origin Website data is not update")
@@ -175,5 +181,5 @@ class Crawling:
                 result_data
             )
             con.commit()
-        print('Save end')
+        print(f'Crawling End {self.school_data["school_name"]} elementary School')
         return True
