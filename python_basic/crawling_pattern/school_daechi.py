@@ -1,6 +1,5 @@
 import datetime, re, requests, os, sqlite3
 from bs4 import BeautifulSoup, Comment
-from db_settings import initial
 
 __all__ = (
     'Crawling',
@@ -24,6 +23,7 @@ class Crawling:
             }
         ]
     }
+    # cookie 에 token 이 없으면 실행이 안됨으로 한번 메인페이지를 방문하여 token 발급 후 진행
     header = {
         'Cookie': ''.join(
             sorted(
@@ -125,6 +125,7 @@ class Crawling:
                     for chunk in r.iter_content(chunk_size=8192):
                         if chunk:
                             f.write(chunk)
+
             result_data.append((post_id, file_subject, file_url, date))
             print(f"file save : {file_subject}")
 
@@ -143,7 +144,6 @@ class Crawling:
         데이터 크롤링
         :return: boolean
         """
-        # initial()
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardDetailAjax.do'
         for board in self.school_data["board_id"]:
             print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"

@@ -9,7 +9,6 @@ def run_process():
     :return:
     """
 
-    # school_daechi.Crawling().detail_page()
     initial()
     school_daechi.Crawling().detail_page()
     school_dorim.Crawling().detail_page()

@@ -1,6 +1,7 @@
 from celery import Celery
 from celery.schedules import crontab
-from crawling_pattern import school_daechi
+from crawling_pattern import school_daechi, school_dorim
+from db_settings import initial
 
 app = Celery(
     'tasks',
@@ -20,9 +21,8 @@ app.conf.beat_schedule = {
 
 @app.task
 def run_crawling():
+    initial()
     school_daechi.Crawling().detail_page()
+    school_dorim.Crawling().detail_page()
 
 
-@app.task
-def add(x, y):
-    return x + y

@@ -39,7 +39,7 @@ class Crawling:
         response = requests.get(self.url + '/board.list?', parameter).text
         soup = BeautifulSoup(response, 'lxml')
         notice_list_data = soup.select('table.boardList > tbody > tr')
-        third_day = datetime.date.today() - datetime.timedelta(days=5)
+        third_day = datetime.date.today() - datetime.timedelta(days=6)
 
         while notice_list_data:
             source = notice_list_data.pop(0)
@@ -72,8 +72,36 @@ class Crawling:
             result_data.append((post_id, post_date))
         return result_data
 
-    def file_download(self):
-        pass
+    def file_download(self, html, post_id, date):
+        save_url = os.getcwd() + '/download_data/' + f'{date}/'
+        result_data = []
+        if not os.path.exists(save_url):
+            os.mkdir(save_url)
+
+        while html:
+            file_data = html.pop(0)
+            download_url = file_data.select_one('tr > td > a').get('href')
+            file_subject = file_data.select_one('tr > td > a').get_text()
+            file_url = save_url + file_subject
+            response = requests.get(download_url)
+            with response as r:
+                r.raise_for_status()
+                with open(file_url, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+
+            result_data.append((post_id, file_subject, file_url, date))
+            print(f"file save : {file_subject}")
+        con = sqlite3.connect(self.db_path)
+        cur = con.cursor()
+        cur.executemany(
+            """INSERT INTO notice_files (post, file_subject, file_url, date) VALUES (?,?,?,?)""",
+            result_data
+        )
+        con.commit()
+        print("files path database save")
+        return True
 
     def detail_page(self):
         for board in self.school_data["board_id"]:
@@ -99,8 +127,10 @@ class Crawling:
                     '\s\w+.+', soup.select_one('div.boardReadHeader > div > dl > dd').get_text()
                 ).group().strip()
                 post_content = soup.select_one('div#contentBody').get_text(strip=True)
+                post_file_list = soup.select('div.boradReadFooter > table > tr > td:nth-of-type(2) > table > tr')
                 result_data.append((post_id, self.school_data["school_name"], board["category"], post_subject,
                                     post_content, post_data[1]))
+                self.file_download(post_file_list, post_id, post_data[1])
             con = sqlite3.connect(self.db_path)
             cur = con.cursor()
             cur.executemany(
