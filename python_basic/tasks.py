@@ -4,7 +4,7 @@ from crawling_pattern import school_daechi
 
 app = Celery(
     'tasks',
-    broker='redis://localhost:6378/0',
+    broker='redis://localhost:6379/0',
 )
 app.conf.update(
     enable_utc=False,

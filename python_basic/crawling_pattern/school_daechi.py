@@ -25,8 +25,12 @@ class Crawling:
         ]
     }
     header = {
-        'Cookie': 'JSESSIONID=qGiWDLyKcx18QpKHZGXYsft7HrOn1pIBVWHIt61zhVe6TNLIUbMaTT1lYk81p8uf.hostingwas2_servlet_'
-                  'engine7;Path=/;HttpOnly'
+        'Cookie': ''.join(
+            sorted(
+                [f'{i.name}={i.value};' for i in requests.get('http://daechi.es.kr/20465/subMenu.do').cookies],
+                reverse=True
+            )
+        )
     }
 
     # db_connect = initial()
@@ -125,7 +129,7 @@ class Crawling:
             result_data
         )
         con.commit()
-        print("files db update")
+        print("files path database save")
         return True
 
     def detail_page(self):
@@ -136,6 +140,8 @@ class Crawling:
         initial()
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardDetailAjax.do'
         for board in self.school_data["board_id"]:
+            print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"
+                  , end="\n\n")
             arr = self.target_selection(board["id"])
             if not arr:
                 # 데이터가 없을경우 원본의 업데이트가 없다고 판단
