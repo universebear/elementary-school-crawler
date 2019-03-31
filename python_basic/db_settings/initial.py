@@ -46,4 +46,5 @@ def initial():
     )'''
     )
     connect_data["connect"].commit()
+    connect_data["connect"].close()
     return connect_data
