@@ -14,6 +14,7 @@ def run_process():
             원하는 기능의 번호를 입력하세요\n
             1. 크롤링 시작\n
             2. DB 의 모든 내용 조회\n
+            3. Celery Worker 서버 실행중일 때 Worker 로 크롤링 시작 (분산)\n
             0. Exit
             '''
         )

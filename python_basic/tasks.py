@@ -26,3 +26,13 @@ def run_crawling():
     school_dorim.Crawling().detail_page()
 
 
+@app.task
+def run_crawling_daechi():
+    initial()
+    school_daechi.Crawling().detail_page()
+
+
+@app.task
+def run_crawling_dorim():
+    initial()
+    school_dorim.Crawling().detail_page()
