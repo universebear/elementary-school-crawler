@@ -6,6 +6,7 @@ verify_ssl = true
 [dev-packages]
 ipython = "*"
 notebook = "*"
+django-extensions = "*"
 
 [packages]
 requests = "*"
