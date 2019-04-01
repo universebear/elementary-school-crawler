@@ -2,6 +2,22 @@
 
 면접 과제로 제작된 초등학교 홈페이지 크롤러입니다.
 
+## Setting & Installs
+
+pyenv & pip install 의 경우
+
+```bash
+~/elementary-school-crawler/
+>> pip install -r requirements.txt
+```
+
+pipenv install 의 경우
+
+```bash
+~/elementary-school-crawler/
+>> pipenv install
+```
+
 ## Crawling Schools
 
 - [도림 초등학교](http://dorim.es.kr/main)

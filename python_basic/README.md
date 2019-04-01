@@ -11,16 +11,17 @@
 ## Run Celery Server
 
 ```bash
-~/python_basic/
+~/elementary-school-crawler/python_basic/
 >> celery -A tasks worker -l info -B
 ```
 
 ## Run Process
 
 ```bash
-~/python_basic/
+~/elementary-school-crawler/python_basic/
 >> python run.py
 ```
+
 ![run_process](readme_image/run_process.png)
 
 ## Crawling Schedules
