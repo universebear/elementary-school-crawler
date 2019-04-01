@@ -2,6 +2,8 @@
 
 면접 과제로 제작된 초등학교 홈페이지 크롤러입니다.
 
+테스트 환경 mac os mojave 10.14.4 / python 3.7.1
+
 ## Setting & Installs
 
 pyenv & pip install 의 경우
@@ -35,7 +37,7 @@ pipenv install 의 경우
 
 ## Version
 
-파이썬과 그 라이브러리로 제작한 크롤러와 프레임워크 django 를 사용하여 제작한 크롤러 하나를 준비했습니다.
+파이썬과 그 라이브러리로 제작한 크롤러와 프레임워크 `django` 를 사용하여 제작한 크롤러 하나를 준비했습니다.
 
 - [python_basic](https://github.com/Younlab/elementary-school-crawler/tree/master/python_basic)
 - [python_framework](https://github.com/Younlab/elementary-school-crawler/tree/master/python_framework)

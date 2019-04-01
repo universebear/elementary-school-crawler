@@ -11,6 +11,7 @@ notebook = "*"
 requests = "*"
 bs4 = "*"
 lxml = "*"
+django = "*"
 
 [requires]
 python_version = "3.7"
