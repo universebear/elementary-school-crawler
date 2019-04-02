@@ -20,6 +20,9 @@ class Board(BoardTemplate):
     category = models.CharField(max_length=1, choices=BOARD_FIELDS)
     post_date = models.DateField()
 
+    def __str__(self):
+        return f'{self.school_name} - {self.subject}'
+
 
 class FileBoard(BoardTemplate):
     post = models.ForeignKey(
@@ -28,3 +31,6 @@ class FileBoard(BoardTemplate):
         related_name='file_board'
     )
     file = models.FileField(upload_to='download_files')
+
+    def __str__(self):
+        return f'{self.post.school_name} - {self.subject}'
