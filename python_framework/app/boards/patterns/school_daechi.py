@@ -1,8 +1,10 @@
-import datetime, re, requests
+import datetime
+import re
+import requests
 from bs4 import BeautifulSoup, Comment
 from django.core.files.base import ContentFile
 
-from boards import models
+from ..models import Board, FileBoard
 
 
 class Crawling:
@@ -52,7 +54,7 @@ class Crawling:
         response = requests.post(url, data=parameter, headers=self.header).text
         soup = BeautifulSoup(response, 'lxml')
         notice_list_data = soup.select('table > tbody > tr')
-        third_day = datetime.date.today() - datetime.timedelta(days=5)
+        third_day = datetime.date.today() - datetime.timedelta(days=3)
         while notice_list_data:
             source = notice_list_data.pop(0)
             post_type = source.select_one("td:nth-of-type(1)").get_text()
@@ -66,8 +68,8 @@ class Crawling:
             elif date_conversion < third_day:
                 # page 범위 내에 제약 일자가 없다면 다음 페이지로 이동 후 배열 업데이트
                 break
-            elif models.Board.objects.filter(post_id=post_id, school_name=self.school_data['school_name'],
-                                             category=board['category']).exists():
+            elif Board.objects.filter(post_id=post_id, school_name=self.school_data['school_name'],
+                                      category=board['category']).exists():
                 # 해당하는 post id 가 db 에 존재할 경우 색인 작업을 중지한다.
                 break
             elif not notice_list_data:
@@ -100,11 +102,11 @@ class Crawling:
                 "atchFileId": file_id,
                 "fileSn": file_number
             }
-            post = models.Board.objects.get(post_id=post_id, school_name=self.school_data['school_name'],
-                                            category=category)
+            post = Board.objects.get(post_id=post_id, school_name=self.school_data['school_name'],
+                                     category=category)
             response = requests.get(download_url, parameter, headers=self.header, stream=True)
 
-            file_data, file_model = models.FileBoard.objects.update_or_create(post=post, subject=file_subject)
+            file_data, file_model = FileBoard.objects.update_or_create(post=post, subject=file_subject)
             file_data.file.save(f'{date}/' + file_subject, ContentFile(response.content))
 
             # result_data.append(file_model)
@@ -117,6 +119,8 @@ class Crawling:
         """
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardDetailAjax.do'
         for board in self.school_data["board_id"]:
+            print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"
+                  , end="\n\n")
             arr = self.target_selection(board)
             if not arr:
                 # 데이터가 없을경우 원본의 업데이트가 없다고 판단
@@ -140,14 +144,15 @@ class Crawling:
                 post_date = post_data[2]
                 post_content = soup.select_one('div.content').get_text(strip=True)
                 result_data.append(
-                    models.Board(post_id=post_id, subject=post_subject, content=post_content,
-                                 school_name=self.school_data["school_name"], category=board["category"],
-                                 post_date=post_date
-                                 ))
+                    Board(post_id=post_id, subject=post_subject, content=post_content,
+                          school_name=self.school_data["school_name"], category=board["category"],
+                          post_date=post_date
+                          ))
 
                 file_list_html = ''.join(soup.find_all(string=lambda text: isinstance(text, Comment)))
                 file_download_list.append((file_list_html, post_id, post_date, board['category']))
-            models.Board.objects.bulk_create(result_data)
+            Board.objects.bulk_create(result_data)
             while file_download_list:
                 data = file_download_list.pop(0)
                 self.file_download(data[0], data[1], data[2], data[3])
+        print(f'Crawling End {self.school_data["school_name"]} elementary School')

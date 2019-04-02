@@ -1,6 +1,5 @@
 import os
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(BASE_DIR)
 STATIC_URL = '/static/'
@@ -36,6 +35,7 @@ DJANGO_APPS = [
 ]
 THIRD_PARTY_APPS = [
     'django_extensions',
+    'django_celery_beat',
 ]
 LOCAL_APPS = [
     'boards.apps.BoardsConfig',
@@ -99,9 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
-
 LANGUAGE_CODE = 'ko-kr'
 
 TIME_ZONE = 'Asia/Seoul'
@@ -112,5 +109,3 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/2.2/howto/static-files/
