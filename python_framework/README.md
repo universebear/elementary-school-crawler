@@ -16,6 +16,7 @@
 ```
 
 ## Run Process
+![](../python_basic/readme_image/django.png)
 
 ```bash
 ~/elementary-school-crawler/python_framework/app/

@@ -16,13 +16,14 @@
 ```
 
 ## Run Process
+![run_process](readme_image/run_process.png)
 
 ```bash
 ~/elementary-school-crawler/python_basic/
 >> python run.py
 ```
 
-![run_process](readme_image/run_process.png)
+
 
 ## Crawling Schedules
 
