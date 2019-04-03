@@ -1,5 +1,6 @@
 /python_basic/download_data/*
 /python_basic/data.db
+/python_framework/frontend/node_modules
 # Created by https://www.gitignore.io/api/git,macos,linux,django,windows,pycharm+all
 # Edit at https://www.gitignore.io/?templates=git,macos,linux,django,windows,pycharm+all
 

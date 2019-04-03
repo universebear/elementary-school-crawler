@@ -13,15 +13,15 @@ class Crawling:
     """
 
     school_data = {
-        "school_name": "daechi",
+        "school_name": "대치초등학교",
         "board_id": [
             {
                 "id": "BBSMSTR_000000006692",
-                "category": "n",
+                "category": "공지사항",
             },
             {
                 "id": "BBSMSTR_000000006693",
-                "category": "p"
+                "category": "가정통신문"
             }
         ]
     }
@@ -115,8 +115,9 @@ class Crawling:
     def school_crawler(self):
         """
         크롤링 메서드
-        :return:
+        :return: update_status
         """
+        update_status = False
         url = 'http://www.daechi.es.kr/dggb/module/board/selectBoardDetailAjax.do'
         for board in self.school_data["board_id"]:
             print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"
@@ -155,4 +156,6 @@ class Crawling:
             while file_download_list:
                 data = file_download_list.pop(0)
                 self.file_download(data[0], data[1], data[2], data[3])
+            update_status = True
         print(f'Crawling End {self.school_data["school_name"]} elementary School')
+        return update_status

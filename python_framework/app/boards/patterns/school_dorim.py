@@ -12,15 +12,15 @@ class Crawling:
     도림 초등학교 패턴
     """
     school_data = {
-        "school_name": "dorim",
+        "school_name": "도림초등학교",
         "board_id": [
             {
                 "id": {"mcode": 1110, "cate": 1110},
-                "category": "n",
+                "category": "공지사항",
             },
             {
                 "id": {"mcode": 1126, "cate": 1125},
-                "category": "p"
+                "category": "가정통신문"
             }
         ]
     }
@@ -86,8 +86,9 @@ class Crawling:
     def school_crawler(self):
         """
         크롤링 메서드
-        :return:
+        :return: update_status
         """
+        update_status = False
         for board in self.school_data["board_id"]:
             print(f"\nCrawling start, {self.school_data['school_name']} : {board['category']}"
                   , end="\n\n")
@@ -124,5 +125,6 @@ class Crawling:
             while file_download_list:
                 data = file_download_list.pop(0)
                 self.file_download(data[0], data[1], data[2], data[3])
-
+            update_status = True
         print(f'Crawling End {self.school_data["school_name"]} elementary School')
+        return update_status

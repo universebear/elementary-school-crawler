@@ -11,14 +11,17 @@ class BoardTemplate(models.Model):
 
 class Board(BoardTemplate):
     BOARD_FIELDS = (
-        ('n', 'notice'),
-        ('p', 'parents_notice')
+        ('n', '공지사항'),
+        ('p', '가정통신문')
     )
     post_id = models.PositiveIntegerField()
     content = models.TextField()
     school_name = models.CharField(max_length=60)
-    category = models.CharField(max_length=1, choices=BOARD_FIELDS)
+    category = models.CharField(max_length=40, choices=BOARD_FIELDS)
     post_date = models.DateField()
+
+    class Meta:
+        ordering = ('-post_date',)
 
     def __str__(self):
         return f'{self.school_name} - {self.subject}'

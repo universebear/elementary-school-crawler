@@ -20,6 +20,8 @@ pipenv install 의 경우
 >> pipenv install
 ```
 
+두 경우 다 가상환경에 접속한다. `pipenv` 의 경우 pipenv shell 로 접속
+
 ## Crawling Schools
 
 - [도림 초등학교](http://dorim.es.kr/main)
