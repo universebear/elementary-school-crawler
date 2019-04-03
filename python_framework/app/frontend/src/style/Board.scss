@@ -1,0 +1,95 @@
+@import "./reset";
+
+.board {
+  max-width: 960px;
+  width: 100%;
+  margin: 0 auto;
+  &-item {
+    margin: 32px 0;
+    background: #fff;
+    padding: 16px;
+    border-radius: 3px;
+    -webkit-box-shadow: 0px 9px 21px -11px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 9px 21px -11px rgba(0, 0, 0, 0.3);
+
+    &-header {
+      p {
+        margin: 8px 0;
+      }
+      .board-item-subject {
+        margin: 12px 0;
+      }
+      .school-name {
+        font-size: 14px;
+      }
+      .category {
+        font-size: 11px;
+        display: inline-block;
+        border-radius: 3px;
+        background: #dee2e6;
+        padding: 2px 6px;
+        margin-left: 16px;
+      }
+    }
+  }
+}
+.download {
+  width: 18px;
+  position: relative;
+  top: 4px;
+}
+.buttons {
+  font-size: 16px;
+  display: inline-block;
+  position: relative;
+  border-radius: 3px;
+  background: #0c8599;
+  padding: 2px 6px;
+  top: -3px;
+  margin-left: 8px;
+  cursor: pointer;
+  color: #c5f6fa;
+}
+.notification {
+  position: fixed;
+  right: -200px;
+  top: 56px;
+  width: 200px;
+  height: 48px;
+  border-radius: 3px;
+  z-index: 10;
+  opacity: 0;
+  animation-name: noti;
+  animation-duration: 4s;
+  font-size: 16px;
+  padding: 14px;
+  font-weight: 700;
+}
+
+.notification-error {
+  background: #fd7e14;
+  color: #fff;
+}
+.notification-success {
+  background: #0ca678;
+  color: #fff;
+}
+@keyframes noti {
+  0% {
+    right: -200;
+    opacity: 0;
+  }
+  30% {
+    right: 0;
+    opacity: 1;
+  }
+
+  80% {
+    right: 0;
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

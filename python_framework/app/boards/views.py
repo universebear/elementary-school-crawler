@@ -23,34 +23,37 @@ class BoardListView(generics.ListAPIView):
 
 class BoardView(APIView):
 
-    def get(self, request):
-        """
-        view data
-        :param request:
-        :return: select category & schools
-        """
-        # Board.objects.filter(school_name=school_name).select_related()
-        school_name = request.GET['schoolName']
-        category = request.GET['category']
-        query = Board.objects.filter(school_name=school_name, category=category).values()
-        return Response(data=query)
+    # def get(self, request):
+    #     """
+    #     view data
+    #     :param request:
+    #     :return: select category & schools
+    #     """
+    #     # Board.objects.filter(school_name=school_name).select_related()
+    #     school_name = request.GET['schoolName']
+    #     category = request.GET['category']
+    #     query = Board.objects.filter(school_name=school_name, category=category).values()
+    #     return Response(data=query)
 
-    def put(self, request):
+    def get(self, request):
         """
         update board data
         :param request:
         :return: update status
         """
-        school_name = request.GET['school_name']
-        if school_name == '대치초등학교':
-            if school_daechi.Crawling().school_crawler():
-                return Response(data={"data": "Update", "status": True}, status=status.HTTP_201_CREATED)
-            return Response(data={"data": "Update", "status": False}, status=status.HTTP_204_NO_CONTENT)
-        elif school_name == '도림초등학교':
-            if school_dorim.Crawling().school_crawler():
-                return Response(data={"data": "Update", "status": True}, status=status.HTTP_201_CREATED)
-            return Response(data={"data": "Update", "status": False}, status=status.HTTP_204_NO_CONTENT)
-        return Response(data={"data": "no content"}, status=status.HTTP_400_BAD_REQUEST)
+        # school_name = request.GET['school_name']
+        # if school_name == '대치초등학교':
+        #     if school_daechi.Crawling().school_crawler():
+        #         return Response(data={"data": "Update", "status": True}, status=status.HTTP_201_CREATED)
+        #     return Response(data={"data": "Update", "status": False}, status=status.HTTP_204_NO_CONTENT)
+        # elif school_name == '도림초등학교':
+        #     if school_dorim.Crawling().school_crawler():
+        #         return Response(data={"data": "Update", "status": True}, status=status.HTTP_201_CREATED)
+        #     return Response(data={"data": "Update", "status": False}, status=status.HTTP_204_NO_CONTENT)
+        # return Response(data={"data": "no content"}, status=status.HTTP_400_BAD_REQUEST)
+        if school_dorim.Crawling().school_crawler() or school_daechi.Crawling().school_crawler():
+            return Response(data={"result": "Success", "status": True}, status=status.HTTP_201_CREATED)
+        return Response(data={"result": "no Data Update", "status": False}, status=status.HTTP_202_ACCEPTED)
 
 
 class BoardFiles(APIView):
