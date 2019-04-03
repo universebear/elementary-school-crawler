@@ -42,3 +42,7 @@ Celery & Redis server 실행중일 때만 작동한다.
 - celery redis
 - sqlite3
 - django-celery-beat
+
+## Frontend
+
+- React
