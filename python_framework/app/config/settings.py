@@ -35,7 +35,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 THIRD_PARTY_APPS = [
-    'django_extensions',
+    # 'django_extensions',
     'django_celery_beat',
     'rest_framework',
     'corsheaders',

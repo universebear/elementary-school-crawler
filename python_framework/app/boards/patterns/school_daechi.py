@@ -66,7 +66,7 @@ class Crawling:
             if '공지' in post_type:
                 continue
             elif date_conversion < third_day:
-                # page 범위 내에 제약 일자가 없다면 다음 페이지로 이동 후 배열 업데이트
+                # 3일 전까지의 일자만 가져오도록
                 break
             elif Board.objects.filter(post_id=post_id, school_name=self.school_data['school_name'],
                                       category=board['category']).exists():
